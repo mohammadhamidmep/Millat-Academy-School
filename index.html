@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartResult Pro | High-Graphics School Marksheet & Topper Software</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter, Plus Jakarta Sans & Cinzel for Official Certificate Headings -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                        cert: ['Cinzel', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+
+        /* Smooth Tab Transition */
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* High-Graphics A4 Marksheet Certificate Styling */
+        .marksheet-sheet {
+            width: 100%;
+            max-width: 820px;
+            min-height: 1120px;
+            margin: 0 auto;
+            background: #ffffff;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 18px;
+            color: #1e293b;
+        }
+
+        .cert-outer-border {
+            border: 4px solid #1e3a8a;
+            padding: 6px;
+            height: 100%;
+            position: relative;
+            background: radial-gradient(circle at top right, rgba(30, 58, 138, 0.03), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(180, 83, 9, 0.04), transparent 40%);
+        }
+
+        .cert-inner-border {
+            border: 2px solid #b45309;
+            padding: 24px 28px;
+            height: 100%;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Corner Decorative Ornaments */
+        .corner-ornament {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border: 3px solid #1e3a8a;
+            z-index: 3;
+        }
+        .corner-tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+        .corner-tr { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+        .corner-br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+        /* Center Watermark */
+        .marksheet-watermark {
+            position: absolute;
+            top: 52%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.06;
+            pointer-events: none;
+            z-index: 1;
+            width: 340px;
+            height: 340px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Clean A4 Print Media Rules */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 6mm;
+            }
+            body {
+                background: #ffffff !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            #printOverlayContainer {
+                position: static !important;
+                display: block !important;
+                background: transparent !important;
+                padding: 0 !important;
+                overflow: visible !important;
+            }
+            .marksheet-sheet {
+                box-shadow: none !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                min-height: auto !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            #meritPrintArea {
+                display: block !important;
+                width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- =====================================================================
+         TOP APPLICATION HEADER (HIDDEN DURING PRINT)
+    ====================================================================== -->
+    <header class="no-print bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white shadow-xl sticky top-0 z-40 border-b border-blue-800/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5">
+                <div id="headerLogoPreview" class="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center overflow-hidden shadow-inner">
+                    <i class="fa-solid fa-award text-amber-400 text-2xl"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 id="headerSchoolTitle" class="font-display font-extrabold text-lg sm:text-xl tracking-tight text-white">
+                            SMART RESULT STUDIO PRO
+                        </h1>
+                        <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[10px] font-bold uppercase">
+                            Auto-Saved
+                        </span>
+                    </div>
+                    <p class="text-xs text-blue-200">High-Graphics Marksheet Designer & Automatic Top-10 Merit Engine</p>
+                </div>
+            </div>
+
+            <!-- Permanent Data Backup / Restore Controls -->
+            <div class="flex items-center gap-2.5">
+                <button onclick="exportBackupJSON()" class="px-3.5 py-2 rounded-xl bg-blue-600/30 hover:bg-blue-600/50 border border-blue-400/30 text-xs font-semibold text-blue-100 flex items-center gap-1.5 transition-all" title="Download Permanent Backup File">
+                    <i class="fa-solid fa-download text-amber-400"></i>
+                    <span>Backup Data</span>
+                </button>
+                <label class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-xs font-semibold text-slate-200 flex items-center gap-1.5 cursor-pointer transition-all" title="Restore Saved Backup File">
+                    <i class="fa-solid fa-upload text-emerald-400"></i>
+                    <span>Restore</span>
+                    <input type="file" accept=".json" onchange="importBackupJSON(event)" class="hidden">
+                </label>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="bg-slate-950/60 border-t border-white/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto gap-1 py-2">
+                <button onclick="switchTab('setup')" id="nav-setup" class="nav-tab px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap flex items-center gap-2 bg-blue-600 text-white shadow-md">
+                    <i class="fa-solid fa-school"></i>
+                    <span>1. School Logo & Setup</span>
+                </button>
+                <button onclick="switchTab('entry')" id="nav-entry" class="nav-tab px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap flex items-center gap-2 text-slate-300 hover:bg-white/10">
+                    <i class="fa-solid fa-file-pen"></i>
+                    <span>2. Enter Student Result</span>
+                </button>
+                <button onclick="switchTab('records')" id="nav-records" class="nav-tab px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap flex items-center gap-2 text-slate-300 hover:bg-white/10">
+                    <i class="fa-solid fa-print"></i>
+                    <span>3. All Results & Print Marksheet</span>
+                    <span id="totalStudentsBadge" class="px-2 py-0.5 rounded-full bg-white/15 text-[11px]">0</span>
+                </button>
+                <button onclick="switchTab('toppers')" id="nav-toppers" class="nav-tab px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap flex items-center gap-2 text-slate-300 hover:bg-white/10">
+                    <i class="fa-solid fa-trophy text-amber-400"></i>
+                    <span>4. Class-Wise Top 10 Toppers</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- =====================================================================
+         MAIN WORKSPACE CONTAINER (HIDDEN DURING PRINT)
+    ====================================================================== -->
+    <main class="no-print max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- =================================================================
+             TAB 1: SCHOOL LOGO, BOLD NAME, ADDRESS & CONTACT SETUP
+        ================================================================== -->
+        <section id="tab-setup" class="tab-pane active">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Form Column -->
+                <div class="lg:col-span-2 bg-white rounded-3xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                        <div>
+                            <h2 class="font-display font-extrabold text-xl sm:text-2xl text-slate-900">School Branding & Marksheet Header Setup</h2>
+                            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Yahan jo details dalenge wo har marksheet par Bold, Large aur Permanent save rahegi.</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold">Step 1</span>
+                    </div>
+
+                    <form id="schoolSetupForm" onsubmit="saveSchoolSettings(event)" class="space-y-5">
+                        <!-- Logo Upload Box -->
+                        <div class="p-4 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-300 flex flex-col sm:flex-row items-center gap-5">
+                            <div id="setupLogoBox" class="w-24 h-24 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center overflow-hidden flex-shrink-0">
+                                <i class="fa-solid fa-building-columns text-3xl text-blue-800"></i>
+                            </div>
+                            <div class="text-center sm:text-left flex-1">
+                                <h3 class="font-bold text-sm text-slate-800">Upload School Logo (PNG / JPG)</h3>
+                                <p class="text-xs text-slate-500 mt-1 mb-3">Ye logo marksheet ke top par aur center watermark me high-quality me print hoga.</p>
+                                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                                    <label class="px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold cursor-pointer shadow-sm transition-all">
+                                        <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Choose School Logo
+                                        <input type="file" accept="image/*" onchange="handleLogoUpload(event)" class="hidden">
+                                    </label>
+                                    <button type="button" onclick="removeSchoolLogo()" class="px-3 py-2 rounded-xl bg-white border border-slate-300 hover:bg-rose-50 hover:text-rose-600 text-slate-600 text-xs font-semibold">
+                                        Remove Logo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- School Name (Bold & Large on Marksheet) -->
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                                School Name (Printed BOLD & LARGE on Marksheet) <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" id="cfgSchoolName" required placeholder="e.g., MILLAT ACADEMY PUBLIC SCHOOL"
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none font-bold text-base text-slate-900">
+                        </div>
+
+                        <!-- School Full Address -->
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                                School Complete Address <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" id="cfgSchoolAddress" required placeholder="e.g., Main Road, Station Chowk, Patna, Bihar - 800001"
+                                   class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 focus:outline-none text-sm font-medium text-slate-800">
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                                    Affiliation / UDISE / Reg. No.
+                                </label>
+                                <input type="text" id="cfgAffiliation" placeholder="e.g., Affiliated to CBSE • Reg No: 3308921"
+                                       class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-blue-600 focus:outline-none text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                                    Examination Title & Session
+                                </label>
+                                <input type="text" id="cfgExamTitle" required placeholder="e.g., ANNUAL EXAMINATION REPORT CARD (2026-27)"
+                                       class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border-blue-600 focus:outline-none text-sm font-semibold">
+                            </div>
+                        </div>
+
+                        <!-- School Contact Details (Printed at Bottom of Marksheet) -->
+                        <div class="pt-2 border-t border-slate-100">
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-blue-800 mb-3">
+                                <i class="fa-solid fa-address-book mr-1"></i> School Contact Details (Marksheet Bottom Footer)
+                            </h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Contact Phone Number <span class="text-rose-500">*</span></label>
+                                    <input type="text" id="cfgPhone" required placeholder="+91 98765 43210"
+                                           class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-blue-600 focus:outline-none text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Official Email ID</label>
+                                    <input type="email" id="cfgEmail" placeholder="info@schoolname.edu.in"
+                                           class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-blue-600 focus:outline-none text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">School Website</label>
+                                    <input type="text" id="cfgWebsite" placeholder="www.schoolname.edu.in"
+                                           class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-blue-600 focus:outline-none text-sm">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 flex flex-wrap items-center justify-between gap-3">
+                            <span class="text-xs text-emerald-700 font-semibold flex items-center gap-1.5">
+                                <i class="fa-solid fa-shield-check"></i> Data permanently stored in local database
+                            </span>
+                            <button type="submit" class="px-7 py-3 rounded-xl bg-gradient-to-r from-blue-700 to-indigo-800 hover:from-blue-800 hover:to-indigo-900 text-white font-bold text-sm shadow-lg shadow-blue-700/25 flex items-center gap-2 transition-all">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                <span>Save School Branding Permanently</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Live Mini Preview Card -->
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+                    <div>
+                        <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">Live Header Preview</span>
+                        <h3 class="font-display font-bold text-lg text-slate-900 mt-3 mb-4">Marksheet Top & Footer Look</h3>
+                        
+                        <div class="border-2 border-blue-900 rounded-2xl p-4 bg-gradient-to-b from-blue-50/70 to-white text-center">
+                            <div id="miniPreviewLogo" class="w-16 h-16 mx-auto rounded-xl bg-white border border-slate-200 flex items-center justify-center overflow-hidden mb-2 shadow-sm">
+                                <i class="fa-solid fa-building-columns text-2xl text-blue-900"></i>
+                            </div>
+                            <h4 id="miniPreviewName" class="font-cert font-black text-lg text-blue-950 uppercase leading-tight">
+                                MILLAT ACADEMY SCHOOL
+                            </h4>
+                            <p id="miniPreviewAddress" class="text-xs font-semibold text-slate-600 mt-1">
+                                Main Campus Road, Station Chowk, Patna
+                            </p>
+                            <span id="miniPreviewExam" class="inline-block mt-2.5 px-3 py-1 rounded-full bg-blue-900 text-white text-[10px] font-bold tracking-wider uppercase">
+                                ANNUAL EXAMINATION 2026-27
+                            </span>
+                            <div class="mt-4 pt-3 border-t border-slate-200 text-[11px] text-slate-600">
+                                <p class="font-bold text-slate-800">Bottom Contact Footer:</p>
+                                <p id="miniPreviewContact" class="mt-0.5">Ph: +91 9876543210 | info@school.edu.in</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="switchTab('entry')" class="mt-6 w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center justify-center gap-2">
+                        <span>Next: Enter Student Result</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- =================================================================
+             TAB 2: ENTER STUDENT DETAILS & SUBJECT MARKS
+        ================================================================== -->
+        <section id="tab-entry" class="tab-pane">
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 sm:p-8 max-w-5xl mx-auto">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4 mb-6">
+                    <div>
+                        <h2 id="entryFormHeading" class="font-display font-extrabold text-xl sm:text-2xl text-slate-900">
+                            Enter Student Details & Examination Marks
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+                            Total, Percentage, Grade aur Class Rank automatic calculate hokar permanent store ho jayega.
+                        </p>
+                    </div>
+                    <button type="button" onclick="resetStudentForm()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> Clear / New Entry
+                    </button>
+                </div>
+
+                <form id="studentResultForm" onsubmit="saveStudentResult(event)" class="space-y-6">
+                    <input type="hidden" id="editingStudentId">
+
+                    <!-- Student Personal & Academic Information -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 bg-slate-50 p-5 rounded-2xl border border-slate-200/80">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Student Full Name <span class="text-rose-500">*</span></label>
+                            <input type="text" id="inStudentName" required placeholder="e.g., AYAAN AHMAD"
+                                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:border-blue-600 focus:outline-none text-sm font-semibold uppercase">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Father's Name <span class="text-rose-500">*</span></label>
+                            <input type="text" id="inFatherName" required placeholder="e.g., MR. IMRAN AHMAD"
+                                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:border-blue-600 focus:outline-none text-sm font-semibold uppercase">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Mother's Name</label>
+                            <input type="text" id="inMotherName" placeholder="e.g., MRS. SHABANA KHATOON"
+                                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:border-blue-600 focus:outline-none text-sm font-semibold uppercase">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Class <span class="text-rose-500">*</span></label>
+                            <select id="inClass" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:border-blue-600 focus:outline-none text-sm font-bold">
+                                <option value="Nursery">Nursery</option>
+                                <option value="LKG">LKG</option>
+                                <option value="UKG">UKG</option>
+                                <option value="Class 1">Class 1</option>
+                                <option value="Class 2">Class 2</option>
+                                <option value="Class 3">Class 3</option>
+                                <option value="Class 4">Class 4</option>
+                                <option value="Class 5">Class 5</option>
+                                <option value="Class 6">Class 6</option>
+                                <option value="Class 7">Class 7</option>
+                                <option value="Class 8">Class 8</option>
+                                <option value="Class 9">Class 9</option>
+                                <option value="Class 10" selected>Class 10</option>
+                                <option value="Class 11">Class 11</option>
+                                <option value="Class 12">Class 12</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Section <span class="text-rose-500">*</span></label>
+                                <select id="inSection" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white focus:border-blue-600 focus:outline-none text-sm font-bold">
+                                    <option value="A">Sec A</option>
+                                    <option value="B">Sec B</option>
+                                    <option value="C">Sec C</option>
+                                    <option value="D">Sec D</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Roll No. <span class="text-rose-500">*</span></label>
+                                <input type="text" id="inRollNo" required placeholder="e.g., 101"
+                                       class="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white focus:border-blue-600 focus:outline-none text-sm font-bold">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Date of Birth</label>
+                                <input type="date" id="inDob"
+                                       class="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white focus:border-blue-600 focus:outline-none text-xs font-semibold">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Admission No.</label>
+                                <input type="text" id="inAdmNo" placeholder="ADM-2026"
+                                       class="w-full px-3 py-2.5 rounded-xl border border-slate-300 bg-white focus:border-blue-600 focus:outline-none text-sm font-semibold">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Subject-Wise Marks Table -->
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="font-display font-bold text-base text-slate-900">
+                                <i class="fa-solid fa-list-check text-blue-700 mr-1.5"></i> Subject-Wise Marks Entry
+                            </h3>
+                            <button type="button" onclick="addSubjectRow()" class="px-3.5 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold flex items-center gap-1.5">
+                                <i class="fa-solid fa-plus"></i> Add Subject
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto border border-slate-200 rounded-2xl">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-900 text-white text-xs uppercase tracking-wider">
+                                        <th class="py-3 px-4">Subject Name</th>
+                                        <th class="py-3 px-4 w-32 text-center">Full Marks</th>
+                                        <th class="py-3 px-4 w-32 text-center">Pass Marks</th>
+                                        <th class="py-3 px-4 w-36 text-center">Obtained Marks</th>
+                                        <th class="py-3 px-4 w-24 text-center">Grade</th>
+                                        <th class="py-3 px-4 w-16 text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subjectRowsContainer" class="divide-y divide-slate-200 text-sm">
+                                    <!-- Dynamic subject rows injected by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Live Auto-Calculation Summary Bar -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-2xl bg-gradient-to-r from-blue-950 to-slate-900 text-white">
+                        <div>
+                            <span class="text-[11px] text-blue-300 uppercase font-semibold">Total Marks</span>
+                            <p id="liveTotalText" class="font-display font-extrabold text-xl mt-0.5">0 / 0</p>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-blue-300 uppercase font-semibold">Percentage</span>
+                            <p id="livePercentText" class="font-display font-extrabold text-xl text-amber-400 mt-0.5">0.00%</p>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-blue-300 uppercase font-semibold">Overall Grade</span>
+                            <p id="liveGradeText" class="font-display font-extrabold text-xl text-emerald-400 mt-0.5">-</p>
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-blue-300 uppercase font-semibold">Final Status</span>
+                            <p id="liveStatusText" class="font-display font-extrabold text-xl mt-0.5">-</p>
+                        </div>
+                    </div>
+
+                    <!-- Save & Print Buttons -->
+                    <div class="flex flex-wrap items-center justify-end gap-3 pt-2">
+                        <button type="submit" name="action" value="save" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-sm flex items-center gap-2 transition-all">
+                            <i class="fa-solid fa-database"></i>
+                            <span>Save Result Permanently</span>
+                        </button>
+                        <button type="submit" name="action" value="save_and_print" class="px-7 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold text-sm shadow-lg shadow-emerald-600/25 flex items-center gap-2 transition-all">
+                            <i class="fa-solid fa-print"></i>
+                            <span>Save & Preview High-Graphics Marksheet</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- =================================================================
+             TAB 3: ALL SAVED RESULTS & PRINT MARKSHEET DIRECTORY
+        ================================================================== -->
+        <section id="tab-records" class="tab-pane">
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="font-display font-extrabold text-xl sm:text-2xl text-slate-900">Saved Student Results & Marksheet Printer</h2>
+                        <p class="text-xs sm:text-sm text-slate-500">Kisi bhi student ke samne "Print Marksheet" par click karke high-graphics A4 result print karein.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <input type="text" id="searchStudentInput" onkeyup="renderAllStudentsTable()" placeholder="Search Name or Roll No..."
+                               class="px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:border-blue-600 focus:outline-none">
+                        <select id="filterRecordsClass" onchange="renderAllStudentsTable()" class="px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold focus:border-blue-600 focus:outline-none">
+                            <option value="ALL">All Classes</option>
+                            <option value="Nursery">Nursery</option>
+                            <option value="LKG">LKG</option>
+                            <option value="UKG">UKG</option>
+                            <option value="Class 1">Class 1</option>
+                            <option value="Class 2">Class 2</option>
+                            <option value="Class 3">Class 3</option>
+                            <option value="Class 4">Class 4</option>
+                            <option value="Class 5">Class 5</option>
+                            <option value="Class 6">Class 6</option>
+                            <option value="Class 7">Class 7</option>
+                            <option value="Class 8">Class 8</option>
+                            <option value="Class 9">Class 9</option>
+                            <option value="Class 10">Class 10</option>
+                            <option value="Class 11">Class 11</option>
+                            <option value="Class 12">Class 12</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto border border-slate-200 rounded-2xl">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-900 text-white text-xs uppercase tracking-wider">
+                                <th class="py-3.5 px-4">Roll No</th>
+                                <th class="py-3.5 px-4">Student Name</th>
+                                <th class="py-3.5 px-4">Father's Name</th>
+                                <th class="py-3.5 px-4">Class & Sec</th>
+                                <th class="py-3.5 px-4 text-center">Total Marks</th>
+                                <th class="py-3.5 px-4 text-center">Percentage</th>
+                                <th class="py-3.5 px-4 text-center">Class Rank</th>
+                                <th class="py-3.5 px-4 text-right">Marksheet & Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allStudentsTableBody" class="divide-y divide-slate-200 text-sm">
+                            <!-- Filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- =================================================================
+             TAB 4: AUTOMATIC CLASS-WISE TOP 10 TOPPERS LEADERBOARD
+        ================================================================== -->
+        <section id="tab-toppers" class="tab-pane">
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-5 border-b border-slate-100">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold mb-2">
+                            <i class="fa-solid fa-crown"></i> Automatic AI Merit Ranking Engine
+                        </div>
+                        <h2 class="font-display font-extrabold text-xl sm:text-2xl text-slate-900">Class-Wise Top 10 Toppers List</h2>
+                        <p class="text-xs sm:text-sm text-slate-500">Software khud ba khud har class ke highest percentage wale Top 10 Toppers ki list banata hai.</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3">
+                        <select id="topperClassSelect" onchange="renderToppersList()" class="px-4 py-2.5 rounded-xl border-2 border-blue-700 bg-blue-50 text-blue-950 font-bold text-sm focus:outline-none">
+                            <option value="Nursery">Nursery</option>
+                            <option value="LKG">LKG</option>
+                            <option value="UKG">UKG</option>
+                            <option value="Class 1">Class 1</option>
+                            <option value="Class 2">Class 2</option>
+                            <option value="Class 3">Class 3</option>
+                            <option value="Class 4">Class 4</option>
+                            <option value="Class 5">Class 5</option>
+                            <option value="Class 6">Class 6</option>
+                            <option value="Class 7">Class 7</option>
+                            <option value="Class 8">Class 8</option>
+                            <option value="Class 9">Class 9</option>
+                            <option value="Class 10" selected>Class 10</option>
+                            <option value="Class 11">Class 11</option>
+                            <option value="Class 12">Class 12</option>
+                        </select>
+
+                        <button onclick="printToppersMeritList()" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold flex items-center gap-2 shadow-md">
+                            <i class="fa-solid fa-print text-amber-400"></i>
+                            <span>Print Top 10 Merit List</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Top 3 Podium Cards -->
+                <div id="topThreePodium" class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+                    <!-- Rank 1, 2, 3 Cards injected dynamically -->
+                </div>
+
+                <!-- Complete Top 10 Merit Table -->
+                <div class="overflow-x-auto border border-slate-200 rounded-2xl">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gradient-to-r from-blue-950 to-slate-900 text-white text-xs uppercase tracking-wider">
+                                <th class="py-3.5 px-4 text-center w-24">Rank</th>
+                                <th class="py-3.5 px-4">Roll No</th>
+                                <th class="py-3.5 px-4">Topper Student Name</th>
+                                <th class="py-3.5 px-4">Father's Name</th>
+                                <th class="py-3.5 px-4 text-center">Section</th>
+                                <th class="py-3.5 px-4 text-center">Total Marks</th>
+                                <th class="py-3.5 px-4 text-center">Percentage</th>
+                                <th class="py-3.5 px-4 text-center">Grade</th>
+                                <th class="py-3.5 px-4 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topTenTableBody" class="divide-y divide-slate-200 text-sm">
+                            <!-- Top 10 rows injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- =====================================================================
+         HIGH-GRAPHICS PRINTABLE A4 MARKSHEET OVERLAY MODAL
+    ====================================================================== -->
+    <div id="printOverlayContainer" class="fixed inset-0 z-50 hidden bg-slate-950/85 backdrop-blur-sm overflow-y-auto py-6 px-3 sm:px-6">
+        
+        <!-- Floating Action Toolbar (Hidden when printing) -->
+        <div class="no-print max-w-[820px] mx-auto mb-4 bg-white rounded-2xl p-3.5 shadow-xl flex flex-wrap items-center justify-between gap-3 border border-slate-200">
+            <div class="flex items-center gap-2.5">
+                <span class="w-9 h-9 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center">
+                    <i class="fa-solid fa-file-certificate text-lg"></i>
+                </span>
+                <div>
+                    <h4 class="font-bold text-sm text-slate-900">High-Graphics Official Marksheet Preview</h4>
+                    <p class="text-[11px] text-slate-500">A4 Print-Ready Format • Border & Watermark Included</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2.5">
+                <button onclick="window.print()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-700 to-indigo-800 hover:from-blue-800 hover:to-indigo-900 text-white text-xs sm:text-sm font-bold shadow-lg flex items-center gap-2">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Print Marksheet (A4)</span>
+                </button>
+                <button onclick="closeMarksheetPreview()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-bold">
+                    Close
+                </button>
+            </div>
+        </div>
+
+        <!-- THE A4 CERTIFICATE MARKSHEET SHEET -->
+        <div class="marksheet-sheet" id="printableMarksheet">
+            <div class="cert-outer-border">
+                <div class="corner-ornament corner-tl"></div>
+                <div class="corner-ornament corner-tr"></div>
+                <div class="corner-ornament corner-bl"></div>
+                <div class="corner-ornament corner-br"></div>
+
+                <!-- Center Subtle School Watermark -->
+                <div class="marksheet-watermark" id="msWatermark">
+                    <i class="fa-solid fa-building-columns text-[220px] text-blue-950"></i>
+                </div>
+
+                <div class="cert-inner-border flex flex-col justify-between">
+                    <div>
+                        <!-- 1. SCHOOL LOGO + BOLD & LARGE SCHOOL NAME + ADDRESS HEADER -->
+                        <div class="flex items-center justify-between gap-4 border-b-2 border-blue-950 pb-4">
+                            <!-- Left School Logo -->
+                            <div id="msLogoLeft" class="w-24 h-24 rounded-2xl border-2 border-amber-600/40 bg-white p-1.5 flex items-center justify-center flex-shrink-0 shadow-sm">
+                                <i class="fa-solid fa-building-columns text-4xl text-blue-900"></i>
+                            </div>
+
+                            <!-- Center Bold & Large School Name & Address -->
+                            <div class="text-center flex-1">
+                                <p id="msAffiliation" class="text-[11px] font-bold uppercase tracking-widest text-amber-800 mb-1">
+                                    AFFILIATED TO EDUCATION BOARD • REGD. INSTITUTION
+                                </p>
+                                <h1 id="msSchoolName" class="font-cert font-black text-2xl sm:text-3xl text-blue-950 uppercase tracking-wide leading-tight">
+                                    MILLAT ACADEMY SCHOOL
+                                </h1>
+                                <p id="msSchoolAddress" class="text-xs sm:text-sm font-bold text-slate-700 mt-1">
+                                    Main Campus Road, Station Chowk, Patna, Bihar
+                                </p>
+                            </div>
+
+                            <!-- Right Official Seal Badge -->
+                            <div class="w-20 h-20 rounded-full border-2 border-dashed border-blue-900/40 flex flex-col items-center justify-center text-center p-1 flex-shrink-0">
+                                <i class="fa-solid fa-award text-amber-600 text-xl"></i>
+                                <span class="text-[8px] font-extrabold uppercase text-blue-950 leading-tight mt-0.5">Verified<br>Academic<br>Record</span>
+                            </div>
+                        </div>
+
+                        <!-- Exam Title Banner -->
+                        <div class="my-4 text-center">
+                            <span id="msExamTitle" class="inline-block px-6 py-1.5 rounded-full bg-gradient-to-r from-blue-950 via-blue-800 to-blue-950 text-white font-display font-extrabold text-xs sm:text-sm uppercase tracking-widest shadow-sm">
+                                ANNUAL EXAMINATION PROGRESS REPORT CARD (2026-27)
+                            </span>
+                        </div>
+
+                        <!-- 2. STUDENT DETAILS GRID (NAME, CLASS, SECTION, ROLL NO, FATHER NAME, ETC.) -->
+                        <div class="bg-blue-50/60 border border-blue-900/20 rounded-xl p-4 mb-5">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-y-2.5 gap-x-4 text-xs sm:text-sm">
+                                <div class="col-span-2 sm:col-span-2">
+                                    <span class="text-slate-500 font-semibold">Student's Name:</span>
+                                    <span id="msStudentName" class="font-extrabold text-blue-950 uppercase ml-1.5 text-sm sm:text-base">-</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-500 font-semibold">Roll Number:</span>
+                                    <span id="msRollNo" class="font-extrabold text-blue-900 ml-1.5">-</span>
+                                </div>
+
+                                <div class="col-span-2 sm:col-span-2">
+                                    <span class="text-slate-500 font-semibold">Father's Name:</span>
+                                    <span id="msFatherName" class="font-bold text-slate-900 uppercase ml-1.5">-</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-500 font-semibold">Class & Section:</span>
+                                    <span id="msClassSec" class="font-extrabold text-blue-900 ml-1.5">-</span>
+                                </div>
+
+                                <div class="col-span-2 sm:col-span-2">
+                                    <span class="text-slate-500 font-semibold">Mother's Name:</span>
+                                    <span id="msMotherName" class="font-bold text-slate-800 uppercase ml-1.5">-</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-500 font-semibold">Date of Birth:</span>
+                                    <span id="msDob" class="font-bold text-slate-800 ml-1.5">-</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. HIGH-GRAPHICS SUBJECT MARKS TABLE -->
+                        <div class="border-2 border-blue-950 rounded-xl overflow-hidden mb-5">
+                            <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                                <thead>
+                                    <tr class="bg-blue-950 text-white uppercase text-[11px] tracking-wider">
+                                        <th class="py-2.5 px-3 border-r border-blue-800 w-12 text-center">S.No</th>
+                                        <th class="py-2.5 px-3 border-r border-blue-800">Subject Description</th>
+                                        <th class="py-2.5 px-3 border-r border-blue-800 text-center w-24">Full Marks</th>
+                                        <th class="py-2.5 px-3 border-r border-blue-800 text-center w-24">Pass Marks</th>
+                                        <th class="py-2.5 px-3 border-r border-blue-800 text-center w-28">Marks Obtained</th>
+                                        <th class="py-2.5 px-3 text-center w-20">Grade</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="msSubjectsBody" class="divide-y divide-slate-300 font-medium">
+                                    <!-- Subject rows populated via JS -->
+                                </tbody>
+                                <tfoot>
+                                    <tr class="bg-amber-50 font-extrabold text-blue-950 border-t-2 border-blue-950">
+                                        <td colspan="2" class="py-2.5 px-3 text-right uppercase text-xs tracking-wider border-r border-slate-300">Grand Total</td>
+                                        <td id="msTotalFull" class="py-2.5 px-3 text-center border-r border-slate-300">500</td>
+                                        <td id="msTotalPass" class="py-2.5 px-3 text-center border-r border-slate-300">165</td>
+                                        <td id="msTotalObtained" class="py-2.5 px-3 text-center text-base text-blue-900 border-r border-slate-300">0</td>
+                                        <td id="msOverallGradeCell" class="py-2.5 px-3 text-center text-base text-amber-800">A+</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <!-- 4. RESULT SUMMARY BOXES (PERCENTAGE, RESULT STATUS, CLASS RANK) -->
+                        <div class="grid grid-cols-4 gap-3 mb-5">
+                            <div class="border border-blue-900/30 bg-slate-50 rounded-xl p-3 text-center">
+                                <span class="block text-[10px] font-bold uppercase text-slate-500">Percentage</span>
+                                <span id="msPercentage" class="font-display font-extrabold text-lg text-blue-950">0.00%</span>
+                            </div>
+                            <div class="border border-blue-900/30 bg-slate-50 rounded-xl p-3 text-center">
+                                <span class="block text-[10px] font-bold uppercase text-slate-500">Overall Grade</span>
+                                <span id="msFinalGrade" class="font-display font-extrabold text-lg text-amber-700">A+</span>
+                            </div>
+                            <div class="border border-blue-900/30 bg-slate-50 rounded-xl p-3 text-center">
+                                <span class="block text-[10px] font-bold uppercase text-slate-500">Result Status</span>
+                                <span id="msResultStatus" class="font-display font-extrabold text-lg text-emerald-700">PASSED</span>
+                            </div>
+                            <div class="border-2 border-amber-500 bg-amber-50/70 rounded-xl p-3 text-center">
+                                <span class="block text-[10px] font-bold uppercase text-amber-900">Class Rank</span>
+                                <span id="msClassRank" class="font-display font-extrabold text-lg text-blue-950">#1</span>
+                            </div>
+                        </div>
+
+                        <!-- Grading Scale Legend -->
+                        <div class="text-[10px] text-slate-600 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 mb-6 flex flex-wrap justify-between gap-2">
+                            <span class="font-bold text-slate-800">Grading Scale:</span>
+                            <span>90-100%: <strong>A+</strong> (Outstanding)</span>
+                            <span>80-89%: <strong>A</strong> (Excellent)</span>
+                            <span>70-79%: <strong>B+</strong> (Very Good)</span>
+                            <span>60-69%: <strong>B</strong> (Good)</span>
+                            <span>45-59%: <strong>C</strong> (Satisfactory)</span>
+                            <span>33-44%: <strong>D</strong> (Pass)</span>
+                        </div>
+                    </div>
+
+                    <!-- 5. SIGNATURES & BOTTOM SCHOOL CONTACT FOOTER -->
+                    <div>
+                        <div class="grid grid-cols-3 gap-4 text-center text-xs pt-6 pb-5">
+                            <div>
+                                <div class="w-32 mx-auto border-b border-slate-400 mb-1.5"></div>
+                                <p class="font-bold text-slate-800">Class Teacher</p>
+                            </div>
+                            <div>
+                                <div class="w-32 mx-auto border-b border-slate-400 mb-1.5"></div>
+                                <p class="font-bold text-slate-800">Exam Controller</p>
+                            </div>
+                            <div>
+                                <div class="w-32 mx-auto border-b border-slate-400 mb-1.5"></div>
+                                <p class="font-bold text-blue-950">Principal Signature & Seal</p>
+                            </div>
+                        </div>
+
+                        <!-- Bottom School Contact Footer -->
+                        <div class="bg-blue-950 text-white rounded-xl px-4 py-2.5 text-center text-[11px] sm:text-xs font-medium">
+                            <p id="msBottomContact">
+                                <i class="fa-solid fa-phone mr-1 text-amber-400"></i> Contact: +91 98765 43210 • Email: info@school.edu.in
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastContainer" class="no-print fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- =====================================================================
+         JAVASCRIPT ENGINE: PERMANENT STORAGE, CALCULATIONS, MARKSHEET & TOPPERS
+    ====================================================================== -->
+    <script>
+        const DB_KEY = 'smart_result_studio_permanent_v1';
+
+        const defaultSchoolConfig = {
+            schoolName: 'MILLAT ACADEMY PUBLIC SCHOOL',
+            schoolAddress: 'Main Station Road, Near Jama Masjid, Patna, Bihar - 800001',
+            affiliation: 'Affiliated to CBSE New Delhi • School Code: 65432',
+            examTitle: 'ANNUAL EXAMINATION PROGRESS REPORT CARD (2026-27)',
+            phone: '+91 98350 45210',
+            email: 'office@millatacademy.edu.in',
+            website: 'www.millatacademy.edu.in',
+            logoBase64: ''
+        };
+
+        const defaultSubjectsTemplate = [
+            { name: 'English Literature & Grammar', full: 100, pass: 33, obtained: 85 },
+            { name: 'Hindi / Urdu Language', full: 100, pass: 33, obtained: 88 },
+            { name: 'Mathematics', full: 100, pass: 33, obtained: 92 },
+            { name: 'Science & Technology', full: 100, pass: 33, obtained: 89 },
+            { name: 'Social Studies', full: 100, pass: 33, obtained: 84 },
+            { name: 'Computer & AI Basics', full: 100, pass: 33, obtained: 95 }
+        ];
+
+        const sampleStudents = [
+            {
+                id: 'STU-101',
+                name: 'ZOYA FATIMA',
+                fatherName: 'MR. TARIQ SIDDIQUI',
+                motherName: 'MRS. NAZIA SIDDIQUI',
+                className: 'Class 10',
+                section: 'A',
+                rollNo: '1001',
+                dob: '2011-05-14',
+                admNo: 'ADM-2021-01',
+                subjects: [
+                    { name: 'English', full: 100, pass: 33, obtained: 95 },
+                    { name: 'Hindi / Urdu', full: 100, pass: 33, obtained: 96 },
+                    { name: 'Mathematics', full: 100, pass: 33, obtained: 98 },
+                    { name: 'Science', full: 100, pass: 33, obtained: 94 },
+                    { name: 'Social Science', full: 100, pass: 33, obtained: 92 }
+                ]
+            },
+            {
+                id: 'STU-102',
+                name: 'AYAAN AHMAD',
+                fatherName: 'MR. IMRAN AHMAD',
+                motherName: 'MRS. SHABANA AHMAD',
+                className: 'Class 10',
+                section: 'A',
+                rollNo: '1002',
+                dob: '2011-08-22',
+                admNo: 'ADM-2021-02',
+                subjects: [
+                    { name: 'English', full: 100, pass: 33, obtained: 89 },
+                    { name: 'Hindi / Urdu', full: 100, pass: 33, obtained: 91 },
+                    { name: 'Mathematics', full: 100, pass: 33, obtained: 95 },
+                    { name: 'Science', full: 100, pass: 33, obtained: 90 },
+                    { name: 'Social Science', full: 100, pass: 33, obtained: 88 }
+                ]
+            },
+            {
+                id: 'STU-103',
+                name: 'SARA SHEIKH',
+                fatherName: 'MR. KHALID SHEIKH',
+                motherName: 'MRS. RUKHSAR SHEIKH',
+                className: 'Class 10',
+                section: 'B',
+                rollNo: '1003',
+                dob: '2011-02-10',
+                admNo: 'ADM-2021-03',
+                subjects: [
+                    { name: 'English', full: 100, pass: 33, obtained: 88 },
+                    { name: 'Hindi / Urdu', full: 100, pass: 33, obtained: 86 },
+                    { name: 'Mathematics', full: 100, pass: 33, obtained: 84 },
+                    { name: 'Science', full: 100, pass: 33, obtained: 89 },
+                    { name: 'Social Science', full: 100, pass: 33, obtained: 85 }
+                ]
+            }
+        ];
+
+        let state = loadState();
+
+        function loadState() {
+            try {
+                const raw = localStorage.getItem(DB_KEY);
+                if (raw) return JSON.parse(raw);
+            } catch (e) {
+                console.error("Failed to load state:", e);
+            }
+            return {
+                config: { ...defaultSchoolConfig },
+                students: JSON.parse(JSON.stringify(sampleStudents))
+            };
+        }
+
+        function persistState() {
+            try {
+                localStorage.setItem(DB_KEY, JSON.stringify(state));
+            } catch (e) {
+                showToast("Warning: Browser storage full. Please export a JSON backup.", "error");
+            }
+            refreshUI();
+        }
+
+        /* -------------------------------------------------------------------
+           TAB SWITCHING & TOASTS
+        ------------------------------------------------------------------- */
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
+                btn.classList.add('text-slate-300', 'hover:bg-white/10');
+            });
+
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            activeBtn.classList.remove('text-slate-300', 'hover:bg-white/10');
+            activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+
+            if (tabId === 'records') renderAllStudentsTable();
+            if (tabId === 'toppers') renderToppersList();
+        }
+
+        function showToast(msg, type = 'success') {
+            const box = document.getElementById('toastContainer');
+            const el = document.createElement('div');
+            const bg = type === 'error' ? 'bg-rose-900 border-rose-500 text-white' : 'bg-slate-900 border-emerald-500 text-white';
+            el.className = `px-4 py-3 rounded-xl border-l-4 shadow-2xl text-xs sm:text-sm font-semibold flex items-center gap-2.5 ${bg}`;
+            el.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-circle-exclamation text-rose-400' : 'fa-circle-check text-emerald-400'}"></i><span>${msg}</span>`;
+            box.appendChild(el);
+            setTimeout(() => el.remove(), 3200);
+        }
+
+        /* -------------------------------------------------------------------
+           SCHOOL SETUP & LOGO UPLOAD (BASE64 PERMANENT)
+        ------------------------------------------------------------------- */
+        function populateSchoolSetupForm() {
+            const c = state.config;
+            document.getElementById('cfgSchoolName').value = c.schoolName || '';
+            document.getElementById('cfgSchoolAddress').value = c.schoolAddress || '';
+            document.getElementById('cfgAffiliation').value = c.affiliation || '';
+            document.getElementById('cfgExamTitle').value = c.examTitle || '';
+            document.getElementById('cfgPhone').value = c.phone || '';
+            document.getElementById('cfgEmail').value = c.email || '';
+            document.getElementById('cfgWebsite').value = c.website || '';
+
+            updateBrandingPreviews();
+        }
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Resize logo via canvas to keep LocalStorage lightweight & crisp
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxDim = 240;
+                    let w = img.width, h = img.height;
+                    if (w > h && w > maxDim) { h = Math.round(h * maxDim / w); w = maxDim; }
+                    else if (h > maxDim) { w = Math.round(w * maxDim / h); h = maxDim; }
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    state.config.logoBase64 = canvas.toDataURL('image/png', 0.9);
+                    persistState();
+                    showToast("School Logo uploaded & saved permanently!");
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeSchoolLogo() {
+            state.config.logoBase64 = '';
+            persistState();
+            showToast("School Logo removed.");
+        }
+
+        function saveSchoolSettings(e) {
+            e.preventDefault();
+            state.config.schoolName = document.getElementById('cfgSchoolName').value.trim();
+            state.config.schoolAddress = document.getElementById('cfgSchoolAddress').value.trim();
+            state.config.affiliation = document.getElementById('cfgAffiliation').value.trim();
+            state.config.examTitle = document.getElementById('cfgExamTitle').value.trim();
+            state.config.phone = document.getElementById('cfgPhone').value.trim();
+            state.config.email = document.getElementById('cfgEmail').value.trim();
+            state.config.website = document.getElementById('cfgWebsite').value.trim();
+
+            persistState();
+            showToast("School Name, Address & Contact saved permanently!");
+        }
+
+        function updateBrandingPreviews() {
+            const c = state.config;
+            document.getElementById('headerSchoolTitle').textContent = c.schoolName || 'SMART RESULT STUDIO';
+            document.getElementById('miniPreviewName').textContent = c.schoolName || 'SCHOOL NAME';
+            document.getElementById('miniPreviewAddress').textContent = c.schoolAddress || 'School Address';
+            document.getElementById('miniPreviewExam').textContent = c.examTitle || 'EXAMINATION REPORT CARD';
+
+            const contactParts = [];
+            if (c.phone) contactParts.push(`Ph: ${c.phone}`);
+            if (c.email) contactParts.push(`Email: ${c.email}`);
+            if (c.website) contactParts.push(`Web: ${c.website}`);
+            document.getElementById('miniPreviewContact').textContent = contactParts.join('  |  ') || 'Contact Info';
+
+            const logoHTML = c.logoBase64
+                ? `<img src="${c.logoBase64}" alt="School Logo" class="w-full h-full object-contain">`
+                : `<i class="fa-solid fa-building-columns text-2xl text-blue-900"></i>`;
+
+            const headerLogoHTML = c.logoBase64
+                ? `<img src="${c.logoBase64}" alt="Logo" class="w-full h-full object-contain bg-white p-0.5">`
+                : `<i class="fa-solid fa-award text-amber-400 text-2xl"></i>`;
+
+            document.getElementById('setupLogoBox').innerHTML = logoHTML;
+            document.getElementById('miniPreviewLogo').innerHTML = logoHTML;
+            document.getElementById('headerLogoPreview').innerHTML = headerLogoHTML;
+        }
+
+        /* -------------------------------------------------------------------
+           GRADING & RESULT CALCULATION ENGINE
+        ------------------------------------------------------------------- */
+        function calculateGrade(percentage) {
+            if (percentage >= 90) return 'A+';
+            if (percentage >= 80) return 'A';
+            if (percentage >= 70) return 'B+';
+            if (percentage >= 60) return 'B';
+            if (percentage >= 45) return 'C';
+            if (percentage >= 33) return 'D';
+            return 'F';
+        }
+
+        function computeStudentMetrics(student) {
+            let totalFull = 0;
+            let totalPass = 0;
+            let totalObtained = 0;
+            let failedAny = false;
+
+            student.subjects.forEach(sub => {
+                const full = Number(sub.full) || 0;
+                const pass = Number(sub.pass) || 0;
+                const obt = Number(sub.obtained) || 0;
+                totalFull += full;
+                totalPass += pass;
+                totalObtained += obt;
+                if (obt < pass) failedAny = true;
+            });
+
+            const percentage = totalFull > 0 ? ((totalObtained / totalFull) * 100) : 0;
+            const grade = failedAny ? 'F' : calculateGrade(percentage);
+            const status = failedAny ? 'FAIL' : 'PASS';
+
+            return {
+                totalFull,
+                totalPass,
+                totalObtained,
+                percentage: Number(percentage.toFixed(2)),
+                grade,
+                status
+            };
+        }
+
+        function getClassRankings(className) {
+            const classStudents = state.students
+                .filter(s => s.className === className)
+                .map(s => ({ ...s, metrics: computeStudentMetrics(s) }))
+                .sort((a, b) => {
+                    if (b.metrics.percentage !== a.metrics.percentage) {
+                        return b.metrics.percentage - a.metrics.percentage;
+                    }
+                    return b.metrics.totalObtained - a.metrics.totalObtained;
+                });
+
+            return classStudents.map((s, idx) => ({
+                ...s,
+                rank: idx + 1
+            }));
+        }
+
+        /* -------------------------------------------------------------------
+           STUDENT RESULT ENTRY FORM LOGIC
+        ------------------------------------------------------------------- */
+        function initSubjectRows(subjectsList = defaultSubjectsTemplate) {
+            const tbody = document.getElementById('subjectRowsContainer');
+            tbody.innerHTML = '';
+            subjectsList.forEach(sub => addSubjectRow(sub));
+            recalculateLiveSummary();
+        }
+
+        function addSubjectRow(sub = { name: '', full: 100, pass: 33, obtained: '' }) {
+            const tbody = document.getElementById('subjectRowsContainer');
+            const tr = document.createElement('tr');
+            tr.className = 'subject-row bg-white hover:bg-slate-50';
+            tr.innerHTML = `
+                <td class="py-2.5 px-3">
+                    <input type="text" required value="${sub.name}" placeholder="Subject Name" oninput="recalculateLiveSummary()"
+                           class="sub-name w-full px-3 py-1.5 rounded-lg border border-slate-300 text-sm font-semibold focus:border-blue-600 focus:outline-none">
+                </td>
+                <td class="py-2.5 px-3">
+                    <input type="number" required min="1" max="500" value="${sub.full}" oninput="recalculateLiveSummary()"
+                           class="sub-full w-full px-2 py-1.5 rounded-lg border border-slate-300 text-center text-sm font-bold focus:border-blue-600 focus:outline-none">
+                </td>
+                <td class="py-2.5 px-3">
+                    <input type="number" required min="0" max="500" value="${sub.pass}" oninput="recalculateLiveSummary()"
+                           class="sub-pass w-full px-2 py-1.5 rounded-lg border border-slate-300 text-center text-sm font-semibold focus:border-blue-600 focus:outline-none">
+                </td>
+                <td class="py-2.5 px-3">
+                    <input type="number" required min="0" max="500" value="${sub.obtained}" placeholder="0" oninput="recalculateLiveSummary()"
+                           class="sub-obt w-full px-2 py-1.5 rounded-lg border-2 border-blue-200 bg-blue-50/40 text-center text-sm font-extrabold text-blue-950 focus:border-blue-600 focus:outline-none">
+                </td>
+                <td class="py-2.5 px-3 text-center">
+                    <span class="sub-grade-badge px-2.5 py-1 rounded-md bg-slate-100 text-xs font-extrabold text-slate-700">-</span>
+                </td>
+                <td class="py-2.5 px-3 text-center">
+                    <button type="button" onclick="this.closest('tr').remove(); recalculateLiveSummary();" class="text-rose-500 hover:text-rose-700 p-1.5">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+            recalculateLiveSummary();
+        }
+
+        function recalculateLiveSummary() {
+            const rows = document.querySelectorAll('#subjectRowsContainer .subject-row');
+            let totalFull = 0, totalObt = 0, failed = false;
+
+            rows.forEach(row => {
+                const full = Number(row.querySelector('.sub-full').value) || 0;
+                const pass = Number(row.querySelector('.sub-pass').value) || 0;
+                const obtInput = row.querySelector('.sub-obt').value;
+                const obt = obtInput === '' ? 0 : Number(obtInput);
+
+                totalFull += full;
+                totalObt += obt;
+
+                const pct = full > 0 ? (obt / full) * 100 : 0;
+                const subGrade = (obtInput !== '' && obt < pass) ? 'F' : calculateGrade(pct);
+                if (obtInput !== '' && obt < pass) failed = true;
+
+                const badge = row.querySelector('.sub-grade-badge');
+                badge.textContent = obtInput === '' ? '-' : subGrade;
+                badge.className = `sub-grade-badge px-2.5 py-1 rounded-md text-xs font-extrabold ${
+                    subGrade === 'F' ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-800'
+                }`;
+            });
+
+            const overallPct = totalFull > 0 ? ((totalObt / totalFull) * 100).toFixed(2) : '0.00';
+            const overallGrade = failed ? 'F' : calculateGrade(Number(overallPct));
+
+            document.getElementById('liveTotalText').textContent = `${totalObt} / ${totalFull}`;
+            document.getElementById('livePercentText').textContent = `${overallPct}%`;
+            document.getElementById('liveGradeText').textContent = overallGrade;
+
+            const statusEl = document.getElementById('liveStatusText');
+            statusEl.textContent = failed ? 'FAIL' : 'PASS';
+            statusEl.className = `font-display font-extrabold text-xl mt-0.5 ${failed ? 'text-rose-400' : 'text-emerald-400'}`;
+        }
+
+        function saveStudentResult(e) {
+            e.preventDefault();
+            const submitAction = e.submitter ? e.submitter.value : 'save';
+
+            const rows = document.querySelectorAll('#subjectRowsContainer .subject-row');
+            if (rows.length === 0) {
+                showToast("Please add at least one subject!", "error");
+                return;
+            }
+
+            const subjects = [];
+            rows.forEach(row => {
+                subjects.push({
+                    name: row.querySelector('.sub-name').value.trim(),
+                    full: Number(row.querySelector('.sub-full').value) || 100,
+                    pass: Number(row.querySelector('.sub-pass').value) || 33,
+                    obtained: Number(row.querySelector('.sub-obt').value) || 0
+                });
+            });
+
+            const editId = document.getElementById('editingStudentId').value;
+            const studentRecord = {
+                id: editId || 'STU-' + Date.now(),
+                name: document.getElementById('inStudentName').value.trim().toUpperCase(),
+                fatherName: document.getElementById('inFatherName').value.trim().toUpperCase(),
+                motherName: document.getElementById('inMotherName').value.trim().toUpperCase(),
+                className: document.getElementById('inClass').value,
+                section: document.getElementById('inSection').value,
+                rollNo: document.getElementById('inRollNo').value.trim(),
+                dob: document.getElementById('inDob').value,
+                admNo: document.getElementById('inAdmNo').value.trim(),
+                subjects
+            };
+
+            if (editId) {
+                const idx = state.students.findIndex(s => s.id === editId);
+                if (idx !== -1) state.students[idx] = studentRecord;
+                showToast(`Updated result for ${studentRecord.name}!`);
+            } else {
+                state.students.unshift(studentRecord);
+                showToast(`Saved ${studentRecord.name}'s result permanently!`);
+            }
+
+            persistState();
+
+            if (submitAction === 'save_and_print') {
+                openMarksheetPreview(studentRecord.id);
+            } else {
+                resetStudentForm();
+                switchTab('records');
+            }
+        }
+
+        function resetStudentForm() {
+            document.getElementById('studentResultForm').reset();
+            document.getElementById('editingStudentId').value = '';
+            document.getElementById('entryFormHeading').textContent = 'Enter Student Details & Examination Marks';
+            initSubjectRows(defaultSubjectsTemplate);
+        }
+
+        function editStudentResult(studentId) {
+            const s = state.students.find(item => item.id === studentId);
+            if (!s) return;
+
+            document.getElementById('editingStudentId').value = s.id;
+            document.getElementById('entryFormHeading').textContent = `Editing Result: ${s.name}`;
+            document.getElementById('inStudentName').value = s.name;
+            document.getElementById('inFatherName').value = s.fatherName;
+            document.getElementById('inMotherName').value = s.motherName || '';
+            document.getElementById('inClass').value = s.className;
+            document.getElementById('inSection').value = s.section;
+            document.getElementById('inRollNo').value = s.rollNo;
+            document.getElementById('inDob').value = s.dob || '';
+            document.getElementById('inAdmNo').value = s.admNo || '';
+
+            initSubjectRows(s.subjects);
+            switchTab('entry');
+        }
+
+        function deleteStudentResult(studentId) {
+            state.students = state.students.filter(s => s.id !== studentId);
+            persistState();
+            showToast("Student result deleted.");
+        }
+
+        /* -------------------------------------------------------------------
+           ALL STUDENTS DIRECTORY TABLE
+        ------------------------------------------------------------------- */
+        function renderAllStudentsTable() {
+            const query = document.getElementById('searchStudentInput').value.toLowerCase();
+            const classFilter = document.getElementById('filterRecordsClass').value;
+            const tbody = document.getElementById('allStudentsTableBody');
+
+            const filtered = state.students.filter(s => {
+                const matchText = s.name.toLowerCase().includes(query) ||
+                                  s.rollNo.toLowerCase().includes(query) ||
+                                  s.fatherName.toLowerCase().includes(query);
+                const matchClass = classFilter === 'ALL' || s.className === classFilter;
+                return matchText && matchClass;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="py-10 text-center text-slate-400 font-medium">No student results found. Click "2. Enter Student Result" to add records.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(s => {
+                const rankedList = getClassRankings(s.className);
+                const rankedInfo = rankedList.find(r => r.id === s.id);
+                const m = rankedInfo.metrics;
+
+                return `
+                    <tr class="hover:bg-blue-50/40 transition-colors">
+                        <td class="py-3.5 px-4 font-bold text-blue-900">${s.rollNo}</td>
+                        <td class="py-3.5 px-4 font-extrabold text-slate-900">${s.name}</td>
+                        <td class="py-3.5 px-4 text-slate-600 font-medium">${s.fatherName}</td>
+                        <td class="py-3.5 px-4">
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 text-xs font-bold">${s.className} - ${s.section}</span>
+                        </td>
+                        <td class="py-3.5 px-4 text-center font-bold">${m.totalObtained} / ${m.totalFull}</td>
+                        <td class="py-3.5 px-4 text-center">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-extrabold ${m.status === 'PASS' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-700'}">
+                                ${m.percentage}% (${m.grade})
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-4 text-center font-extrabold text-amber-700">#${rankedInfo.rank}</td>
+                        <td class="py-3.5 px-4 text-right space-x-1.5 whitespace-nowrap">
+                            <button onclick="openMarksheetPreview('${s.id}')" class="px-3 py-1.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold shadow-sm inline-flex items-center gap-1.5">
+                                <i class="fa-solid fa-print"></i> Print Marksheet
+                            </button>
+                            <button onclick="editStudentResult('${s.id}')" title="Edit Marks" class="p-2 rounded-lg bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-800">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="deleteStudentResult('${s.id}')" title="Delete" class="p-2 rounded-lg bg-slate-100 hover:bg-rose-100 text-slate-700 hover:text-rose-700">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        /* -------------------------------------------------------------------
+           HIGH-GRAPHICS A4 MARKSHEET RENDERER & PRINT TRIGGER
+        ------------------------------------------------------------------- */
+        function openMarksheetPreview(studentId) {
+            const s = state.students.find(item => item.id === studentId);
+            if (!s) return;
+
+            const c = state.config;
+            const rankedClass = getClassRankings(s.className);
+            const studentWithRank = rankedClass.find(r => r.id === s.id);
+            const m = studentWithRank.metrics;
+
+            // 1. School Logo, Bold Name, Address & Affiliation
+            const logoHTML = c.logoBase64
+                ? `<img src="${c.logoBase64}" alt="School Logo" class="w-full h-full object-contain">`
+                : `<i class="fa-solid fa-building-columns text-4xl text-blue-900"></i>`;
+
+            const watermarkHTML = c.logoBase64
+                ? `<img src="${c.logoBase64}" alt="Watermark" class="w-72 h-72 object-contain grayscale">`
+                : `<i class="fa-solid fa-building-columns text-[220px] text-blue-950"></i>`;
+
+            document.getElementById('msLogoLeft').innerHTML = logoHTML;
+            document.getElementById('msWatermark').innerHTML = watermarkHTML;
+            document.getElementById('msAffiliation').textContent = c.affiliation || 'RECOGNIZED EDUCATIONAL INSTITUTION';
+            document.getElementById('msSchoolName').textContent = c.schoolName || 'SCHOOL NAME';
+            document.getElementById('msSchoolAddress').textContent = c.schoolAddress || 'School Address';
+            document.getElementById('msExamTitle').textContent = c.examTitle || 'ANNUAL EXAMINATION REPORT CARD';
+
+            // 2. Student Details
+            document.getElementById('msStudentName').textContent = s.name;
+            document.getElementById('msRollNo').textContent = s.rollNo;
+            document.getElementById('msFatherName').textContent = s.fatherName;
+            document.getElementById('msClassSec').textContent = `${s.className} (${s.section})`;
+            document.getElementById('msMotherName').textContent = s.motherName || 'N/A';
+            document.getElementById('msDob').textContent = s.dob ? new Date(s.dob).toLocaleDateString('en-IN') : (s.admNo || 'N/A');
+
+            // 3. Subject Marks Table
+            const tbody = document.getElementById('msSubjectsBody');
+            tbody.innerHTML = s.subjects.map((sub, i) => {
+                const subPct = sub.full > 0 ? (sub.obtained / sub.full) * 100 : 0;
+                const subGrade = sub.obtained < sub.pass ? 'F' : calculateGrade(subPct);
+                return `
+                    <tr class="${i % 2 === 0 ? 'bg-white' : 'bg-slate-50/70'}">
+                        <td class="py-2 px-3 text-center border-r border-slate-300 font-bold text-slate-600">${i + 1}</td>
+                        <td class="py-2 px-3 border-r border-slate-300 font-bold text-slate-900">${sub.name}</td>
+                        <td class="py-2 px-3 text-center border-r border-slate-300">${sub.full}</td>
+                        <td class="py-2 px-3 text-center border-r border-slate-300">${sub.pass}</td>
+                        <td class="py-2 px-3 text-center border-r border-slate-300 font-extrabold text-blue-950">${sub.obtained}</td>
+                        <td class="py-2 px-3 text-center font-extrabold ${subGrade === 'F' ? 'text-rose-600' : 'text-emerald-700'}">${subGrade}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('msTotalFull').textContent = m.totalFull;
+            document.getElementById('msTotalPass').textContent = m.totalPass;
+            document.getElementById('msTotalObtained').textContent = m.totalObtained;
+            document.getElementById('msOverallGradeCell').textContent = m.grade;
+
+            // 4. Summary Badges
+            document.getElementById('msPercentage').textContent = `${m.percentage}%`;
+            document.getElementById('msFinalGrade').textContent = m.grade;
+            const resEl = document.getElementById('msResultStatus');
+            resEl.textContent = m.status === 'PASS' ? 'PASSED' : 'FAILED';
+            resEl.className = `font-display font-extrabold text-lg ${m.status === 'PASS' ? 'text-emerald-700' : 'text-rose-600'}`;
+            document.getElementById('msClassRank').textContent = `#${studentWithRank.rank} of ${rankedClass.length}`;
+
+            // 5. Bottom Contact Footer
+            const contactItems = [];
+            if (c.phone) contactItems.push(`Phone: ${c.phone}`);
+            if (c.email) contactItems.push(`Email: ${c.email}`);
+            if (c.website) contactItems.push(`Website: ${c.website}`);
+            document.getElementById('msBottomContact').innerHTML = `
+                <i class="fa-solid fa-phone-volume text-amber-400 mr-1.5"></i> ${contactItems.join('  •  ') || 'School Office Contact'}
+            `;
+
+            const overlay = document.getElementById('printOverlayContainer');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('block');
+        }
+
+        function closeMarksheetPreview() {
+            const overlay = document.getElementById('printOverlayContainer');
+            overlay.classList.add('hidden');
+            overlay.classList.remove('block');
+        }
+
+        /* -------------------------------------------------------------------
+           AUTOMATIC CLASS-WISE TOP 10 TOPPERS LEADERBOARD
+        ------------------------------------------------------------------- */
+        function renderToppersList() {
+            const selectedClass = document.getElementById('topperClassSelect').value;
+            const ranked = getClassRankings(selectedClass).slice(0, 10);
+
+            const podiumEl = document.getElementById('topThreePodium');
+            const tbody = document.getElementById('topTenTableBody');
+
+            if (ranked.length === 0) {
+                podiumEl.innerHTML = '';
+                tbody.innerHTML = `<tr><td colspan="9" class="py-10 text-center text-slate-400 font-medium">No student results entered yet for ${selectedClass}.</td></tr>`;
+                return;
+            }
+
+            // Render Top 3 Podium Cards
+            const medalStyles = [
+                { badge: '1st TOPPER (GOLD)', bg: 'from-amber-50 to-yellow-100/70 border-amber-400', icon: 'fa-crown text-amber-500' },
+                { badge: '2nd TOPPER (SILVER)', bg: 'from-slate-50 to-slate-200/70 border-slate-400', icon: 'fa-medal text-slate-500' },
+                { badge: '3rd TOPPER (BRONZE)', bg: 'from-orange-50 to-amber-100/50 border-orange-400', icon: 'fa-award text-orange-600' }
+            ];
+
+            podiumEl.innerHTML = ranked.slice(0, 3).map((st, i) => {
+                const style = medalStyles[i];
+                return `
+                    <div class="rounded-2xl border-2 bg-gradient-to-br ${style.bg} p-5 shadow-sm relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="px-2.5 py-1 rounded-full bg-slate-900 text-white text-[10px] font-extrabold tracking-wider">
+                                ${style.badge}
+                            </span>
+                            <i class="fa-solid ${style.icon} text-2xl"></i>
+                        </div>
+                        <h3 class="font-display font-extrabold text-lg text-slate-900 mt-1">${st.name}</h3>
+                        <p class="text-xs text-slate-600 font-semibold">S/o ${st.fatherName}</p>
+                        <div class="mt-4 pt-3 border-t border-black/10 flex items-center justify-between">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-slate-500 block">Percentage</span>
+                                <span class="font-display font-black text-xl text-blue-950">${st.metrics.percentage}%</span>
+                            </div>
+                            <button onclick="openMarksheetPreview('${st.id}')" class="px-3 py-1.5 rounded-xl bg-blue-900 hover:bg-blue-950 text-white text-xs font-bold">
+                                Print Marksheet
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Render Full Top 10 Merit Table
+            tbody.innerHTML = ranked.map(st => `
+                <tr class="${st.rank <= 3 ? 'bg-amber-50/40 font-semibold' : 'hover:bg-slate-50'}">
+                    <td class="py-3.5 px-4 text-center">
+                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full font-extrabold text-xs ${
+                            st.rank === 1 ? 'bg-amber-400 text-slate-950' :
+                            st.rank === 2 ? 'bg-slate-300 text-slate-900' :
+                            st.rank === 3 ? 'bg-orange-300 text-slate-950' : 'bg-blue-100 text-blue-900'
+                        }">#${st.rank}</span>
+                    </td>
+                    <td class="py-3.5 px-4 font-bold text-blue-900">${st.rollNo}</td>
+                    <td class="py-3.5 px-4 font-extrabold text-slate-900">${st.name}</td>
+                    <td class="py-3.5 px-4 text-slate-600">${st.fatherName}</td>
+                    <td class="py-3.5 px-4 text-center font-bold">${st.section}</td>
+                    <td class="py-3.5 px-4 text-center font-bold">${st.metrics.totalObtained} / ${st.metrics.totalFull}</td>
+                    <td class="py-3.5 px-4 text-center font-extrabold text-blue-950">${st.metrics.percentage}%</td>
+                    <td class="py-3.5 px-4 text-center">
+                        <span class="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-xs font-extrabold">${st.metrics.grade}</span>
+                    </td>
+                    <td class="py-3.5 px-4 text-right">
+                        <button onclick="openMarksheetPreview('${st.id}')" class="px-3 py-1.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold">
+                            <i class="fa-solid fa-print mr-1"></i> Marksheet
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function printToppersMeritList() {
+            const selectedClass = document.getElementById('topperClassSelect').value;
+            const ranked = getClassRankings(selectedClass).slice(0, 10);
+            if (ranked.length === 0) {
+                showToast(`No students found in ${selectedClass} to print!`, "error");
+                return;
+            }
+            const c = state.config;
+            const printWin = window.open('', '_blank', 'width=900,height=700');
+            printWin.document.write(`
+                <html>
+                <head>
+                    <title>Top 10 Toppers - ${selectedClass} | ${c.schoolName}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 25px; color: #111; }
+                        .header { text-align: center; border-bottom: 3px solid #1e3a8a; padding-bottom: 12px; margin-bottom: 20px; }
+                        .header h1 { margin: 0; font-size: 26px; color: #1e3a8a; text-transform: uppercase; }
+                        .header p { margin: 4px 0; font-size: 13px; font-weight: bold; color: #444; }
+                        .badge { display: inline-block; background: #1e3a8a; color: #fff; padding: 6px 18px; border-radius: 20px; font-weight: bold; font-size: 14px; margin-top: 8px; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+                        th, td { border: 1px solid #94a3b8; padding: 9px 10px; text-align: left; }
+                        th { background: #1e3a8a; color: #fff; }
+                        tr:nth-child(even) { background: #f8fafc; }
+                        .footer { margin-top: 30px; text-align: center; font-size: 12px; border-top: 1px solid #ccc; padding-top: 10px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>${c.schoolName}</h1>
+                        <p>${c.schoolAddress}</p>
+                        <div class="badge">TOP 10 MERIT LIST — ${selectedClass.toUpperCase()} (${c.examTitle})</div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Roll No</th>
+                                <th>Student Name</th>
+                                <th>Father's Name</th>
+                                <th>Section</th>
+                                <th>Total Marks</th>
+                                <th>Percentage</th>
+                                <th>Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${ranked.map(s => `
+                                <tr>
+                                    <td><strong>#${s.rank}</strong></td>
+                                    <td>${s.rollNo}</td>
+                                    <td><strong>${s.name}</strong></td>
+                                    <td>${s.fatherName}</td>
+                                    <td>${s.section}</td>
+                                    <td>${s.metrics.totalObtained} / ${s.metrics.totalFull}</td>
+                                    <td><strong>${s.metrics.percentage}%</strong></td>
+                                    <td>${s.metrics.grade}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    <div class="footer">
+                        Contact: ${c.phone} | ${c.email} | ${c.website}
+                    </div>
+                    <script>window.onload = function() { window.print(); };<\/script>
+                </body>
+                </html>
+            `);
+            printWin.document.close();
+        }
+
+        /* -------------------------------------------------------------------
+           PERMANENT JSON BACKUP & RESTORE
+        ------------------------------------------------------------------- */
+        function exportBackupJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+            const a = document.createElement('a');
+            a.setAttribute("href", dataStr);
+            a.setAttribute("download", `School_Result_Backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            showToast("Permanent Backup JSON file downloaded!");
+        }
+
+        function importBackupJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (imported.config && Array.isArray(imported.students)) {
+                        state = imported;
+                        persistState();
+                        populateSchoolSetupForm();
+                        showToast("Backup restored successfully!");
+                    } else {
+                        showToast("Invalid backup file format.", "error");
+                    }
+                } catch (err) {
+                    showToast("Error reading backup file.", "error");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function refreshUI() {
+            document.getElementById('totalStudentsBadge').textContent = state.students.length;
+            updateBrandingPreviews();
+            renderAllStudentsTable();
+            renderToppersList();
+        }
+
+        // Initialize Application on Load
+        window.onload = function() {
+            populateSchoolSetupForm();
+            initSubjectRows(defaultSubjectsTemplate);
+            refreshUI();
+        };
+    </script>
+</body>
+</html>
